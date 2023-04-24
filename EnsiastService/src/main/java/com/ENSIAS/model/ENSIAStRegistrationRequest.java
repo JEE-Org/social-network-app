@@ -10,9 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ENSIAStRegistrationRequest {
+
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private Integer promo;
 
 }

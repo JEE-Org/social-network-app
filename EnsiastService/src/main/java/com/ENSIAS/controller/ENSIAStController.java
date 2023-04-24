@@ -1,16 +1,25 @@
 package com.ENSIAS.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ENSIAS.model.ENSIAStRegistrationRequest;
+import com.ENSIAS.service.ENSIAStService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/Signin")
+@RequestMapping("/login")
+@AllArgsConstructor
 public class ENSIAStController {
 
+    private final ENSIAStService ensiaStService;
     @GetMapping
     public String get(){
         return "hello world";
+    }
+
+    @PostMapping
+    public void registerENSIASt(@RequestBody ENSIAStRegistrationRequest request){
+        ensiaStService.registerENSIASt(request);
     }
 }
