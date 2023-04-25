@@ -1,10 +1,9 @@
 package com.ENSIAS.service;
 
 import com.ENSIAS.model.ENSIASt;
-import com.ENSIAS.model.ENSIAStRegistrationRequest;
+import com.ENSIAS.model.RegistrationRequest;
 import com.ENSIAS.repository.EnsiastRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class ENSIAStService implements IENSIAStSerivces {
     EnsiastRepository ensiastRepository;
 
     @Override
-    public void registerENSIASt(ENSIAStRegistrationRequest request) {
+    public void registerENSIASt(RegistrationRequest request) {
         ENSIASt ensiaSt = ENSIASt.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())

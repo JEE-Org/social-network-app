@@ -1,14 +1,13 @@
 package com.ENSIAS.controller;
 
 
-import com.ENSIAS.model.ENSIAStRegistrationRequest;
+import com.ENSIAS.model.LoginRequest;
+import com.ENSIAS.model.RegistrationRequest;
 import com.ENSIAS.service.ENSIAStService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/login")
 @AllArgsConstructor
 public class ENSIAStController {
 
@@ -19,7 +18,12 @@ public class ENSIAStController {
     }
 
     @PostMapping("/signup")
-    public void registerENSIASt(@RequestBody ENSIAStRegistrationRequest request){
+    public void registerENSIASt(@RequestBody RegistrationRequest request){
         ensiaStService.registerENSIASt(request);
+    }
+
+    @PostMapping("/login")
+    public void loginENSIASt(@RequestBody LoginRequest request){
+
     }
 }

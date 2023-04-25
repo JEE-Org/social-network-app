@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ENSIAStRegistrationRequest {
+public class RegistrationRequest {
 
     private String firstName;
     private String lastName;
