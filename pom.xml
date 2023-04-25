@@ -15,8 +15,9 @@
 	<name>SocialNetwork</name>
 	<description>Demo project for Spring Boot</description>
 	<modules>
-		<module>EnsiastService</module>
+		<module>RegistrationService</module>
 		<module>EurekaServer</module>
+		<module>PostService</module>
 	</modules>
 
 
