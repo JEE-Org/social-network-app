@@ -14,7 +14,8 @@ public class ENSIAStRegistrationRequest {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private Integer promo;
+    private String field;
+    private String password;
 
 }

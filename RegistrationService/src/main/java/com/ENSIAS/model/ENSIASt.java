@@ -19,16 +19,17 @@ public class ENSIASt {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private Integer promo;
+    private String field;
+    private String password;
+
 
     ENSIASt(String firstName, String lastName, String email,String password,Integer promo){
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
-        this.password=password;
         this.promo=promo;
-
+        this.password=password;
     }
 
 }

@@ -18,7 +18,7 @@ public class ENSIAStController {
         return "hello world";
     }
 
-    @PostMapping
+    @PostMapping("/signup")
     public void registerENSIASt(@RequestBody ENSIAStRegistrationRequest request){
         ensiaStService.registerENSIASt(request);
     }
