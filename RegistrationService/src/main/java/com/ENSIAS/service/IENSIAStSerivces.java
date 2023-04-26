@@ -8,8 +8,10 @@ import java.util.Optional;
 
 public interface IENSIAStSerivces {
 
-    public void registerENSIASt(RegistrationRequest request);
+    public ENSIASt registerENSIASt(RegistrationRequest request);
     public List<ENSIASt> findAll();
+
+    public Optional<ENSIASt> findByEmail(String email);
     public Optional<ENSIASt> findByLastName(String lastName);
     public Optional<List<ENSIASt>> findByPromo(Integer promo);
     public Optional<List<ENSIASt>> findByPromoAndField(Integer promo, String field);

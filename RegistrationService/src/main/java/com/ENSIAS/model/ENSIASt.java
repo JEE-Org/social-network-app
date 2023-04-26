@@ -24,7 +24,7 @@ public class ENSIASt {
     private String password;
 
 
-    ENSIASt(String firstName, String lastName, String email,String password,Integer promo){
+    ENSIASt(String firstName, String lastName, String email,Integer promo,String field, String password){
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;

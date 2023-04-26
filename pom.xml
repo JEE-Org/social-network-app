@@ -18,6 +18,7 @@
 		<module>RegistrationService</module>
 		<module>EurekaServer</module>
 		<module>PostService</module>
+		<module>MailingService</module>
 	</modules>
 
 

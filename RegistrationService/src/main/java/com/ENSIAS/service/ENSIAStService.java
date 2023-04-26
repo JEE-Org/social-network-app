@@ -16,7 +16,8 @@ public class ENSIAStService implements IENSIAStSerivces {
     EnsiastRepository ensiastRepository;
 
     @Override
-    public void registerENSIASt(RegistrationRequest request) {
+    public ENSIASt registerENSIASt(RegistrationRequest request) {
+        if(findByEmail(request.getEmail()).isPresent()) throw new RuntimeException("ENSIASt already exists !");
         ENSIASt ensiaSt = ENSIASt.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -26,11 +27,18 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .password(request.getPassword())
                 .build();
         ensiastRepository.saveAndFlush(ensiaSt);
+        return ensiaSt;
     }
 
     @Override
     public List<ENSIASt> findAll() {
         return ensiastRepository.findAll();
+    }
+
+    @Override
+    public Optional<ENSIASt>  findByEmail(String email) {
+        Optional<ENSIASt> ensiaSt = ensiastRepository.findByEmail(email);
+        return ensiaSt;
     }
 
     @Override
