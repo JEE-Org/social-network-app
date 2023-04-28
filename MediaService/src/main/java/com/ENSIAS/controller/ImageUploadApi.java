@@ -1,6 +1,7 @@
-import com.clone.instagram.instamediaservice.model.ImageMetadata;
-import com.clone.instagram.instamediaservice.payload.UploadFileResponse;
-import com.clone.instagram.instamediaservice.service.ImageService;
+package com.ENSIAS.controller ;
+
+import com.ENSIAS.model.ImageMetadata;
+import com.ENSIAS.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

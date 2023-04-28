@@ -1,7 +1,7 @@
-package com.clone.instagram.instamediaservice.service;
+package com.ENSIAS.service;
 
-import com.clone.instagram.instamediaservice.model.ImageMetadata;
-import com.clone.instagram.instamediaservice.repository.ImageMetadataRepository;
+import com.ENSIAS.model.ImageMetadata;
+import com.ENSIAS.repository.ImageMetadataRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
