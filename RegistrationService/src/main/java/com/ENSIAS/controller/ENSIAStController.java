@@ -11,12 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
 
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/ENSIASts")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200") // allow requests from the specified origin
 public class ENSIAStController {
 
     private final ENSIAStService ensiaStService;
@@ -27,8 +25,12 @@ public class ENSIAStController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerENSIASt(@RequestBody RegistrationRequest request) {
-        ENSIASt newENSIASt = ensiaStService.registerENSIASt(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("ENSIASt registered successfully");
+        try {
+            ENSIASt newENSIASt = ensiaStService.registerENSIASt(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("ENSIASt registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register ENSIASt: " + e.getMessage());
+        }
     }
 
 

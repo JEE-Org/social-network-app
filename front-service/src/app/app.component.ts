@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class AppComponent {
 
   // Define the API endpoint URL
-  private apiUrl = 'http://localhost:8090/ENSIASts/signup';
+  private apiUrl = 'http://localhost:8095/ENSIASts/signup';
 
   // Define the default values for the registration form fields
   registrationRequest = {
@@ -33,16 +33,21 @@ export class AppComponent {
     });
 
     // Send the POST request to the API endpoint
-    this.http.post<any>(this.apiUrl, this.registrationRequest, { headers }).subscribe(
-      response => {
-        console.log('API response:', response);
-        alert('Registration successful!');
-      },
-      error => {
-        console.error('API error:', error);
-        alert('Registration failed!');
-      }
+    this.http.post<any>(this.apiUrl, this.registrationRequest, { headers })
+    .subscribe(
+        response => {
+            console.log('API response:', response);
+            alert('Registration successful!');
+        },
+        error => {
+            console.error('API error:', error);
+            alert('Registration failed!');
+        },
+        () => {
+            console.log('API request completed.');
+        }
     );
+
       
   }
 
