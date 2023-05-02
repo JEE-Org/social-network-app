@@ -1,42 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RegistrationRequest } from 'src/app/models/registration-request';
-import { ApiService } from 'src/app/services/api.service';
+import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
-  selector: 'app-registration-form',
-  templateUrl: './registration-form.component.html',
-  styleUrls: ['./registration-form.component.css']
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
-export class RegistrationFormComponent implements OnInit {
+export class AppComponent {
 
-  registrationForm: FormGroup;
+  // Define the API endpoint URL
+  private apiUrl = 'http://localhost:8090/ENSIASts/signup';
 
-  constructor(private formBuilder: FormBuilder, private apiService: ApiService) { }
+  // Define the default values for the registration form fields
+  registrationRequest = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    promo: 0,
+    field: '',
+    password: ''
+  };
 
-  ngOnInit(): void {
-    this.registrationForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      promo: ['', Validators.required],
-      field: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+  // Inject the HttpClient service
+  constructor(private http: HttpClient) {}
+
+  // Define the method to handle form submission
+  onSubmit() {
+
+    // Set the request headers
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
     });
-  }
 
-  onSubmit(): void {
-    const registrationRequest: RegistrationRequest = this.registrationForm.value;
-    this.apiService.registerENSIASt(registrationRequest).subscribe(
-      () => {
-        console.log('Registration successful!');
-        // Add any success message or redirect to a success page here
+    // Send the POST request to the API endpoint
+    this.http.post<any>(this.apiUrl, this.registrationRequest, { headers }).subscribe(
+      response => {
+        console.log('API response:', response);
+        alert('Registration successful!');
       },
-      (error) => {
-        console.log(`Registration failed: ${error.message}`);
-        // Add any error message or handle the error here
+      error => {
+        console.error('API error:', error);
+        alert('Registration failed!');
       }
     );
+      
   }
 
 }

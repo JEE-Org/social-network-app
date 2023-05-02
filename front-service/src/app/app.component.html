@@ -1,48 +1,27 @@
-<div class="container">
-  <h2 class="text-center">Registration Form</h2>
-  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="firstName">First Name:</label>
-      <input type="text" formControlName="firstName" id="firstName" class="form-control">
-      <div *ngIf="registrationForm.controls.firstName.invalid && registrationForm.controls.firstName.touched" class="text-danger">
-        First Name is required
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="lastName">Last Name:</label>
-      <input type="text" formControlName="lastName" id="lastName" class="form-control">
-      <div *ngIf="registrationForm.controls.lastName.invalid && registrationForm.controls.lastName.touched" class="text-danger">
-        Last Name is required
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" formControlName="email" id="email" class="form-control">
-      <div *ngIf="registrationForm.controls.email.invalid && registrationForm.controls.email.touched" class="text-danger">
-        Please enter a valid email
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="promo">Promo:</label>
-      <input type="number" formControlName="promo" id="promo" class="form-control">
-      <div *ngIf="registrationForm.controls.promo.invalid && registrationForm.controls.promo.touched" class="text-danger">
-        Promo is required
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="field">Field:</label>
-      <input type="text" formControlName="field" id="field" class="form-control">
-      <div *ngIf="registrationForm.controls.field.invalid && registrationForm.controls.field.touched" class="text-danger">
-        Field is required
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" formControlName="password" id="password" class="form-control">
-      <div *ngIf="registrationForm.controls.password.invalid && registrationForm.controls.password.touched" class="text-danger">
-        Password must be at least 8 characters
-      </div>
-    </div>
-    <button type="submit" [disabled]="registrationForm.invalid" class="btn btn-primary">Submit</button>
-  </form>
-</div>
+<form (submit)="onSubmit()">
+  <div class="form-group">
+    <label for="firstName">First Name:</label>
+    <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="registrationRequest.firstName" required>
+  </div>
+  <div class="form-group">
+    <label for="lastName">Last Name:</label>
+    <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="registrationRequest.lastName" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" class="form-control" id="email" name="email" [(ngModel)]="registrationRequest.email" required>
+  </div>
+  <div class="form-group">
+    <label for="promo">Promo:</label>
+    <input type="number" class="form-control" id="promo" name="promo" [(ngModel)]="registrationRequest.promo" required>
+  </div>
+  <div class="form-group">
+    <label for="field">Field:</label>
+    <input type="text" class="form-control" id="field" name="field" [(ngModel)]="registrationRequest.field" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" class="form-control" id="password" name="password" [(ngModel)]="registrationRequest.password" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>
