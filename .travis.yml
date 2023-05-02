@@ -1,0 +1,13 @@
+language: java
+jdk:
+  - openjdk-19
+
+script:
+  - ./mvnw clean install
+
+notifications:
+  email:
+    recipients:
+      - lakhdachiyassine@gmail.com
+    on_success: always
+    on_failure: always
