@@ -6,17 +6,21 @@ import com.ENSIAS.model.LoginRequest;
 import com.ENSIAS.model.RegistrationRequest;
 import com.ENSIAS.service.ENSIAStService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 public class ENSIAStController {
 
     private final ENSIAStService ensiaStService;
+
     @GetMapping("/home")
     public String get(){
         return "hello world";
@@ -31,17 +35,27 @@ public class ENSIAStController {
         return ResponseEntity.ok("ENSIASt created");
     }
 
+    @GetMapping("/signup")
+    public String sginup(){
+        return "it's signup";
+    }
+
 
     //Changed the return type
     @PostMapping("/login")
     public String loginENSIASt(@RequestBody LoginRequest request){
-        if(ensiaStService.findByEmail(request.getEmail()).isEmpty()){
-            return String.format("%s : doesn't exist",request.getEmail());
-        }
-        return "Logged successfully";
+        return ensiaStService.login(request);
     }
 
+    @GetMapping("/login")
+    public String login(){
+        return "it's login";
+    }
 
+    @GetMapping("/logOUT")
+    public String logOUT(){
+        return "it's logOUT";
+    }
 
 
 }
