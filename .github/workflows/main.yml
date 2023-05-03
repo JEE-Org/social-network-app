@@ -28,12 +28,11 @@ jobs:
       - name: Build and run backend
         run: |
           mvn clean install
-          mvn spring-boot:run
 
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
           SPRING_DATASOURCE_USERNAME: myuser
           SPRING_DATASOURCE_PASSWORD: mypassword
 
-      - name: Build and run frontend
-        run: ng serve
+      #- name: Build and run frontend
+       # run: ng serve
