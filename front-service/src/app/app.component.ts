@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class AppComponent {
 
   // Define the API endpoint URL
-  private apiUrl = 'http://localhost:8095/ENSIASts/signup';
+  private apiUrl = 'http://localhost:8090/ENSIASts/signup';
 
   // Define the default values for the registration form fields
   registrationRequest = {
