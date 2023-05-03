@@ -19,6 +19,7 @@
 		<module>EurekaServer</module>
 		<module>MailingService</module>
 		<module>PostService</module>
+		<module>MediaService</module>
 	</modules>
 
 
@@ -47,7 +48,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

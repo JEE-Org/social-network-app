@@ -1,9 +1,16 @@
 package com.ENSIAS.service;
 
 import com.ENSIAS.model.ENSIASt;
+import com.ENSIAS.model.LoginRequest;
 import com.ENSIAS.model.RegistrationRequest;
+import com.ENSIAS.model.Role;
 import com.ENSIAS.repository.EnsiastRepository;
+import com.ENSIAS.repository.RoleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +22,12 @@ public class ENSIAStService implements IENSIAStSerivces {
 
     EnsiastRepository ensiastRepository;
 
+    RoleRepository roleRepository;
+
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
     public ENSIASt registerENSIASt(RegistrationRequest request) {
         if(findByEmail(request.getEmail()).isPresent()) throw new RuntimeException("ENSIASt already exists !");
@@ -24,10 +37,29 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .email(request.getEmail())
                 .promo(request.getPromo())
                 .field(request.getField())
-                .password(request.getPassword())
+                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                //.password(request.getPassword())
                 .build();
         ensiastRepository.saveAndFlush(ensiaSt);
+        roleRepository.saveAndFlush(Role.USER);
+
         return ensiaSt;
+    }
+
+    public String login(LoginRequest request){
+        Optional<ENSIASt> ensiaSt = ensiastRepository.findByEmail(request.getEmail());
+        if(ensiaSt.isEmpty()){
+            return String.format("%s : doesn't exist",request.getEmail());
+        }
+        String psswd = request.getPassword();
+        String encodedPsswd = ensiaSt.get().getPassword();
+        boolean isPsswdCorrect = bCryptPasswordEncoder.matches(psswd,encodedPsswd);
+        //psswd.equals(encodedPsswd)
+        if(isPsswdCorrect){
+            return "Logged successfully";
+        } else {
+            return "Password error";
+        }
     }
 
     @Override

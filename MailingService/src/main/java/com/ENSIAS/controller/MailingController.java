@@ -19,7 +19,11 @@ public class MailingController {
     EmailService emailService;
 
     Email email = new Email(
+<<<<<<< HEAD
             "lakhdachiyassine@gmail.com",
+=======
+            "haytamelhayani@gmail.com",
+>>>>>>> projectV2
             "welcome to ENSIAS network",
             "ENSIAS Network"
     );
