@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: mydb
+          MYSQL_USER: myuser
+          MYSQL_PASSWORD: mypassword
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and run backend
+        run: |
+          mvn clean install
+          mvn spring-boot:run
+
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb
+          SPRING_DATASOURCE_USERNAME: myuser
+          SPRING_DATASOURCE_PASSWORD: mypassword
+
+      - name: Build and run frontend
+        run: ng serve
