@@ -21,23 +21,16 @@ public class MailingApplication {
     private EmailService emailService;
 
     Email email = new Email(
-<<<<<<< HEAD
-            "lakhdachiyassine@gmail.com",
-=======
             "haytamelhayani@gmail.com",
->>>>>>> projectV2
             "BODY",
             "Subjeect"
     );
     ENSIASt ensiaSt = new ENSIASt(
             "haitam",
             "elhayni",
-<<<<<<< HEAD
-            "lakhdachiyassine@gmail.com"
-=======
             "haytamelhayani@gmail.com"
->>>>>>> projectV2
     );
+
     @EventListener(ApplicationReadyEvent.class)
     public void sendEmail(){
         emailService.sendEmail(ensiaSt);
