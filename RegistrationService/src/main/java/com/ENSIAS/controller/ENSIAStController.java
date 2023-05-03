@@ -9,11 +9,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200") // allow requests from the specified origin
 public class ENSIAStController {
 
     private final ENSIAStService ensiaStService;
@@ -33,10 +35,9 @@ public class ENSIAStController {
     }
 
     @GetMapping("/signup")
-    public String sginup(){
+    public String sginup() {
         return "it's signup";
     }
-
 
     //Changed the return type
     @PostMapping("/login")
