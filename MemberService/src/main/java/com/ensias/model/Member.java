@@ -23,8 +23,8 @@ public class Member {
 	private String prenom ;
 	private String promo ;
 	private String filiere ;
-	@OneToMany(mappedBy = "member")
-	private Collection<Message> messagesEnvoyes ;
+	//@OneToMany(mappedBy = "member")
+	//private Collection<Message> messagesEnvoyes ;
 	
 
 }

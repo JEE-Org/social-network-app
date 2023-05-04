@@ -23,8 +23,8 @@ public class Message {
 	private String contenue ;
 	private int idSender ;
 	private int idReceiver ;
-	@ManyToOne
-	private Member membre ;
+	//@ManyToOne
+	//private Member membre ;
 	
 
 }
