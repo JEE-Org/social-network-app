@@ -1,7 +1,7 @@
 package com.ENSIAS.security;
 
 import com.ENSIAS.repository.EnsiastRepository;
-import com.ENSIAS.repository.RoleRepository;
+//import com.ENSIAS.repository.RoleRepository;
 import com.ENSIAS.service.ENSIAStService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

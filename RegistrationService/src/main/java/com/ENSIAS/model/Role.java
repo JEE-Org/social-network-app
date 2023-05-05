@@ -3,6 +3,8 @@ package com.ENSIAS.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
+
 
 @Entity
 @Data
@@ -24,3 +26,8 @@ public class Role {
     }
 
 }
+
+//public enum Role {
+//    USER,
+//    ADMIN,
+//}

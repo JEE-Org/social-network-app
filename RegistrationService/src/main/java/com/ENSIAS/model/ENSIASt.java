@@ -4,9 +4,7 @@ package com.ENSIAS.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,9 +24,12 @@ public class ENSIASt {
     private Integer promo;
     private String field;
     private String password;
-
+    private String state;
+    
+//    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>(Collections.singletonList(new Role("USER")));
+    //    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 
 
 
@@ -38,6 +39,7 @@ public class ENSIASt {
         this.email=email;
         this.promo=promo;
         this.password=password;
+        this.field=field;
     }
 
     public ENSIASt(ENSIASt ensiaSt) {
@@ -48,6 +50,7 @@ public class ENSIASt {
         this.promo=ensiaSt.promo;
         this.field=ensiaSt.field;
         this.password=ensiaSt.password;
+        this.state=ensiaSt.state;
         this.roles=ensiaSt.roles;
     }
 

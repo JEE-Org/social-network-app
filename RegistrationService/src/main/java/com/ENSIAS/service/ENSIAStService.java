@@ -1,11 +1,9 @@
 package com.ENSIAS.service;
 
-import com.ENSIAS.model.ENSIASt;
-import com.ENSIAS.model.LoginRequest;
-import com.ENSIAS.model.RegistrationRequest;
-import com.ENSIAS.model.Role;
+import com.ENSIAS.model.*;
 import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.repository.RoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +11,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +28,7 @@ public class ENSIAStService implements IENSIAStSerivces {
 
     @Override
     public ENSIASt registerENSIASt(RegistrationRequest request) {
-        if(findByEmail(request.getEmail()).isPresent()) throw new RuntimeException("ENSIASt already exists !");
+        if(findByEmail(request.getEmail()).isPresent()) return null;
         ENSIASt ensiaSt = ENSIASt.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -40,13 +37,19 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .field(request.getField())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 //.password(request.getPassword())
+                .state(STATE.INACTIF)
                 .build();
-        ensiastRepository.saveAndFlush(ensiaSt);
+        Set<Role> ensiastRoles = new HashSet<>();
+        ensiastRoles.add(Role.USER);
+        ensiaSt.setRoles(ensiastRoles);
         roleRepository.saveAndFlush(Role.USER);
+        ensiastRepository.saveAndFlush(ensiaSt);
+
 
         return ensiaSt;
     }
 
+    @Override
     public String login(LoginRequest request){
         Optional<ENSIASt> ensiaSt = ensiastRepository.findByEmail(request.getEmail());
         if(ensiaSt.isEmpty()){
@@ -57,6 +60,9 @@ public class ENSIAStService implements IENSIAStSerivces {
         boolean isPsswdCorrect = bCryptPasswordEncoder.matches(psswd,encodedPsswd);
         //psswd.equals(encodedPsswd)
         if(isPsswdCorrect){
+            ENSIASt ensiaSt1 = ensiaSt.get();
+            ensiaSt1.setState(STATE.ACTIF);
+            ensiastRepository.saveAndFlush(ensiaSt1);
             return "Logged successfully";
         } else {
             return "Password error";

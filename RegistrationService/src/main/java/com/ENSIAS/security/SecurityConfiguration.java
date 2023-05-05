@@ -2,8 +2,10 @@ package com.ENSIAS.security;
 
 
 import com.ENSIAS.model.ENSIASt;
+import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.service.ENSIAStService;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +26,14 @@ public class SecurityConfiguration {
 
 //    @Autowired
 //    ENSIAStDetailsService ensiaStDetailsService;
+//
+//    @Autowired
+//    BCryptPasswordEncoder bCryptPasswordEncoder;
 
 //    @Autowired
 //    ENSIAStService ensiaStService;
+
+//    private final EnsiastRepository ensiastRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -47,7 +54,7 @@ public class SecurityConfiguration {
 //    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 //        auth
 //                .userDetailsService(ensiaStDetailsService)
-//                .passwordEncoder(passwordEncoder);
+//                .passwordEncoder(bCryptPasswordEncoder);
 //    }
 
 
@@ -58,14 +65,16 @@ public class SecurityConfiguration {
                         authorize.requestMatchers("/home","/signup", "/login").permitAll()
                                 //.requestMatchers("/ENSIASts").hasAnyAuthority("ADMIN")
                                 .anyRequest().authenticated()
-//                ).formLogin(
+                )
+//                .formLogin(
 //                        form -> form
 //                                .loginPage("/login")
 //                                .defaultSuccessUrl("/home")
-//                                //.usernameParameter("email")
-//                                //.passwordParameter("password")
+//                                .usernameParameter("email")
+//                                .passwordParameter("password")
 //                                .permitAll()
-                ).logout(
+//                )
+                .logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/checkout"))
                                 .permitAll()
