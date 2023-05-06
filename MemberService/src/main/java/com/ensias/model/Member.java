@@ -7,9 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import model_aux.Message;
 
 @Entity
 @Data
@@ -19,12 +21,13 @@ public class Member {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id ;
-	private String nom ;
-	private String prenom ;
-	private String promo ;
-	private String filiere ;
+	private String firstName ;
+	private String lastName ;
+	private String promo ;   // meme chose
+	private String filiere ; //il faut creer un classse
 	//@OneToMany(mappedBy = "member")
-	//private Collection<Message> messagesEnvoyes ;
+	@Transient
+	private Collection<Message> messagesEnvoyes ;
 	
 
 }
