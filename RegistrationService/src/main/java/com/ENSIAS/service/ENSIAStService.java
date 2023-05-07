@@ -4,6 +4,7 @@ import com.ENSIAS.enums.Role;
 import com.ENSIAS.enums.State;
 import com.ENSIAS.model.*;
 import com.ENSIAS.repository.EnsiastRepository;
+import com.ENSIAS.repository.TokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ import java.util.*;
 public class ENSIAStService implements IENSIAStSerivces {
 
     private final EnsiastRepository ensiastRepository;
+
+    private final TokenRepository tokenRepository;
 
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -72,20 +75,22 @@ public class ENSIAStService implements IENSIAStSerivces {
             if(ensiaSt.isEmpty()){
                 response = String.format("%s : doesn't exist",request.getEmail());
                 return AuthResponse.builder()
-                        .token(response)
+                        .accessToken(response)
                         .build();
             }
             response="Password error";
             return AuthResponse.builder()
-                    .token(response)
+                    .accessToken(response)
                     .build();
         }
         ENSIASt ensiaSt1 = new ENSIASt(ensiaSt);
         ensiaSt1.setState(State.ACTIF);
         ensiastRepository.saveAndFlush(ensiaSt1);
         var jwtToken = jwtService.generateToken(ensiaSt1);
+        revokeAllUserTokens(ensiaSt1);
+        saveUserToken(ensiaSt1, jwtToken);
         return AuthResponse.builder()
-                .token(jwtToken)
+                .accessToken(jwtToken)
                 .build();
 //        String psswd = request.getPassword();
 //        String encodedPsswd = ensiaSt.get().getPassword();
@@ -100,6 +105,28 @@ public class ENSIAStService implements IENSIAStSerivces {
 //            return "Password error";
 //        }
     }
+    private void saveUserToken(ENSIASt ensiaSt, String jwtToken) {
+        var token = Token.builder()
+                .ensiaSt(ensiaSt)
+                .token(jwtToken)
+                .tokenType("BEARER")
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(ENSIASt ensiaSt) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(ensiaSt.getEnsiast_id());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
+
     @Override
     public List<ENSIASt> findAll() {
         return ensiastRepository.findAll();

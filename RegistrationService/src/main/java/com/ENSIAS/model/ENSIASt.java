@@ -21,7 +21,7 @@ public class ENSIASt implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer ensiast_id;
 
     private String firstName;
     private String lastName;
@@ -36,8 +36,11 @@ public class ENSIASt implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "ensiaSt")
+    private List<Token> tokens;
+
     public ENSIASt(Optional<ENSIASt> ensiaSt) {
-        this.id=ensiaSt.get().getId();
+        this.ensiast_id =ensiaSt.get().getEnsiast_id();
         this.firstName=ensiaSt.get().getFirstName();
         this.lastName=ensiaSt.get().getLastName();
         this.email=ensiaSt.get().getEmail();

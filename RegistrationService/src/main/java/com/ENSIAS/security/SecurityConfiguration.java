@@ -35,6 +35,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFiter;
     private final AuthenticationProvider authenticationProvider;
+    private final LogoutHandler logoutHandler;
 
     @Autowired
     UserDetailsService ensiaStDetailsService;
@@ -52,8 +53,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFiter,UsernamePasswordAuthenticationFilter.class)
                 .logout()
-                .logoutUrl("/home")
-                //.addLogoutHandler(logoutHandler)
+                .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler((req,resp,auth) -> SecurityContextHolder.clearContext());
 
         return http.build();

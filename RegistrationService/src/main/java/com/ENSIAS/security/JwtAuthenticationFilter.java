@@ -1,5 +1,6 @@
 package com.ENSIAS.security;
 
+import com.ENSIAS.repository.TokenRepository;
 import com.ENSIAS.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService ensiaStDetailsService;
+    private final TokenRepository tokenRepository;
 
 
     @Override
@@ -41,12 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         jwt=authHeader.substring(7);
         ensiastEmail = jwtService.extractEmail(jwt);
         if(ensiastEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.ensiaStDetailsService.loadUserByUsername(ensiastEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)){
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                    .map(t -> !t.isExpired() && !t.isRevoked())
+                    .orElse(false);
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -56,7 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
             }
         }
         filterChain.doFilter(request,response);
