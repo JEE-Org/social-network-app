@@ -28,7 +28,7 @@ public class MemberServiceApplication implements CommandLineRunner {
 		
 		
 		
-		memberRepository.save(new Member(null, "Alami", "Walid", "2025", "GL", null));
+		memberRepository.save(new Member(null, "Alami", "Mohamed", "2025", "GL", null));
 
 		
 	}

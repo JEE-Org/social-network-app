@@ -30,7 +30,8 @@ public class MessagesServiceApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Member member = memberRestClient.findMemberById(1) ;
+		Member member = memberRestClient.findMemberById(2) ;
+		System.out.println(member);
 		
 		messageRepository.save(new Message(null, "Message de test 1", 1, 2, member) ) ;	
 		messageRepository.save(new Message(null, "Message de test 2", 1, 3, member) ) ;

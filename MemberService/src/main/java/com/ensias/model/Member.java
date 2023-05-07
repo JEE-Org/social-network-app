@@ -26,6 +26,7 @@ public class Member {
 	private String promo ;   // meme chose
 	private String filiere ; //il faut creer un classse
 	//@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member")
 	@Transient
 	private Collection<Message> messagesEnvoyes ;
 	
