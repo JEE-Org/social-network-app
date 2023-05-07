@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IENSIAStSerivces {
-
     public ENSIASt registerENSIASt(RegistrationRequest request);
     public ResponseEntity<String> checkRegistration(ENSIASt ensiaSt);
     public AuthResponse login(LoginRequest request);
@@ -21,8 +20,6 @@ public interface IENSIAStSerivces {
     public Optional<List<ENSIASt>> findByPromo(Integer promo);
     public Optional<List<ENSIASt>> findByPromoAndField(Integer promo, String field);
     public Optional<List<ENSIASt>> findByField(String field);
-    public Optional<List<ENSIASt>> findActifENSIASts(State state);
-
-
-
+    public Optional<List<ENSIASt>> findActifENSIASts();
+    public void addRole(String email);
 }

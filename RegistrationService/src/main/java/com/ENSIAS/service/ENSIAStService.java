@@ -158,7 +158,14 @@ public class ENSIAStService implements IENSIAStSerivces {
     }
 
     @Override
-    public Optional<List<ENSIASt>> findActifENSIASts(State state) {
+    public Optional<List<ENSIASt>> findActifENSIASts() {
         return ensiastRepository.findByState(State.ACTIF);
+    }
+
+    @Override
+    public void addRole(String email) {
+        ENSIASt ensiaSt = new ENSIASt(ensiastRepository.findByEmail(email));
+        ensiaSt.setRole(Role.ADMIN);
+        ensiastRepository.saveAndFlush(ensiaSt);
     }
 }
