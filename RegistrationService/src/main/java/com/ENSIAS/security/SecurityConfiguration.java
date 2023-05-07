@@ -44,7 +44,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/home","/signup", "/login")
+                .requestMatchers("/ENSIASts/home",
+                        "/authentication/signup",
+                        "/authentication/login")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

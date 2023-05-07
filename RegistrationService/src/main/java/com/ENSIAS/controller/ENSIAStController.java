@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/ENSIASts")
 public class ENSIAStController {
 
     private final ENSIAStService ensiaStService;
@@ -28,45 +29,13 @@ public class ENSIAStController {
         return "hello world";
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> registerENSIASt(@RequestBody RegistrationRequest request){
-        ENSIASt ensiaSt = ensiaStService.registerENSIASt(request);
-        return ensiaStService.checkRegistration(ensiaSt);
-    }
-
-    @GetMapping("/signup")
-    public String sginup(){
-        return "it's signup";
-    }
-
-
-    @PostMapping("/login")
-    public AuthResponse loginENSIASt(@RequestBody LoginRequest request){
-        return ensiaStService.login(request);
-    }
-
-    @GetMapping("/login")
-    public String login(){
-        return "it's login";
-    }
-
-    @GetMapping("/logut")
-    public String logout(){
-        return "it's logOUT";
-    }
-
-    @GetMapping("/ENSIASts")
+    @GetMapping
     public List<ENSIASt> findAll(){
         return ensiaStService.findAll();
     }
 
-    @GetMapping("/tests")
-    public String test(){
-        return "test";
-    }
-
-    @GetMapping("/ENSIASts/lastnames")
-    public List<String> findByLastName(@RequestParam(value = "lastName") String lastName ){
+    @GetMapping("/lastnames")
+    public List<String> findByLastName(@RequestParam(value = "lastname") String lastName ){
         Optional<List<ENSIASt>> ensiaSt = ensiaStService.findByLastName(lastName);
         return ensiaSt
                 .stream()
@@ -75,7 +44,7 @@ public class ENSIAStController {
                 .toList();
     }
 
-    @GetMapping("/ENSIASts/promos")
+    @GetMapping("/promos")
     public List<ENSIASt> findByPromo(@RequestParam(value = "promo") Integer promo){
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByPromo(promo);
         return ensiaSts
@@ -85,10 +54,9 @@ public class ENSIAStController {
                 .toList();
     }
 
-    @GetMapping("/ENSIASts/{promo}")
+    @GetMapping("/{promo}")
     public List<ENSIASt> findByPromoAndField(@PathVariable(value = "promo") Integer promo,
                                              @RequestParam(value = "field") String field){
-
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByPromoAndField(promo,field);
         return ensiaSts
                 .stream()
@@ -97,7 +65,7 @@ public class ENSIAStController {
                 .toList();
     }
 
-    @GetMapping("/ENSIASts/fields")
+    @GetMapping("/fields")
     public List<ENSIASt> findByField(@RequestParam(value = "field") String field){
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByField(field);
         return ensiaSts
@@ -106,7 +74,4 @@ public class ENSIAStController {
                 //.map(ENSIASt::toString)
                 .toList();
     }
-    ///{field}
-
-
 }
