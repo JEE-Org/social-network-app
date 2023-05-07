@@ -156,4 +156,9 @@ public class ENSIAStService implements IENSIAStSerivces {
     public Optional<List<ENSIASt>> findByField(String field) {
         return ensiastRepository.findByField(field);
     }
+
+    @Override
+    public Optional<List<ENSIASt>> findActifENSIASts(State state) {
+        return ensiastRepository.findByState(State.ACTIF);
+    }
 }

@@ -1,5 +1,6 @@
 package com.ENSIAS.service;
 
+import com.ENSIAS.enums.State;
 import com.ENSIAS.model.AuthResponse;
 import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.LoginRequest;
@@ -16,10 +17,12 @@ public interface IENSIAStSerivces {
     public AuthResponse login(LoginRequest request);
     public List<ENSIASt> findAll();
     public Optional<ENSIASt> findByEmail(String email);
-    Optional<List<ENSIASt>> findByLastName(String lastName);
+    public Optional<List<ENSIASt>> findByLastName(String lastName);
     public Optional<List<ENSIASt>> findByPromo(Integer promo);
     public Optional<List<ENSIASt>> findByPromoAndField(Integer promo, String field);
     public Optional<List<ENSIASt>> findByField(String field);
+    public Optional<List<ENSIASt>> findActifENSIASts(State state);
+
 
 
 }
