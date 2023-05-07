@@ -1,13 +1,16 @@
 package com.ENSIAS.service;
 
+import com.ENSIAS.enums.Role;
+import com.ENSIAS.enums.State;
 import com.ENSIAS.model.*;
 import com.ENSIAS.repository.EnsiastRepository;
-import com.ENSIAS.repository.RoleRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +20,14 @@ import java.util.*;
 @AllArgsConstructor
 public class ENSIAStService implements IENSIAStSerivces {
 
-    EnsiastRepository ensiastRepository;
-
-    RoleRepository roleRepository;
-
+    private final EnsiastRepository ensiastRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public ENSIASt registerENSIASt(RegistrationRequest request) {
@@ -36,39 +39,67 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .promo(request.getPromo())
                 .field(request.getField())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
-                //.password(request.getPassword())
-                .state(STATE.INACTIF)
+                .state(State.INACTIF)
+                .role(Role.USER)
                 .build();
-        Set<Role> ensiastRoles = new HashSet<>();
-        ensiastRoles.add(Role.USER);
-        ensiaSt.setRoles(ensiastRoles);
-        roleRepository.saveAndFlush(Role.USER);
         ensiastRepository.saveAndFlush(ensiaSt);
-
-
+//        var jwtToken = jwtService.generateToken(ensiaSt);
+//        return AuthResponse.builder()
+//                .token(jwtToken)
+//                .build();
         return ensiaSt;
+    }
+    
+    public ResponseEntity<String> checkRegistration(ENSIASt ensiaSt){
+        if(ensiaSt==null){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("This email is already registered");
+        }
+        return ResponseEntity.ok("ENSIASt created");
     }
 
     @Override
-    public String login(LoginRequest request){
+    public AuthResponse login(LoginRequest request){
         Optional<ENSIASt> ensiaSt = ensiastRepository.findByEmail(request.getEmail());
-        if(ensiaSt.isEmpty()){
-            return String.format("%s : doesn't exist",request.getEmail());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException exception){
+            String response;
+            if(ensiaSt.isEmpty()){
+                response = String.format("%s : doesn't exist",request.getEmail());
+                return AuthResponse.builder()
+                        .token(response)
+                        .build();
+            }
+            response="Password error";
+            return AuthResponse.builder()
+                    .token(response)
+                    .build();
         }
-        String psswd = request.getPassword();
-        String encodedPsswd = ensiaSt.get().getPassword();
-        boolean isPsswdCorrect = bCryptPasswordEncoder.matches(psswd,encodedPsswd);
-        //psswd.equals(encodedPsswd)
-        if(isPsswdCorrect){
-            ENSIASt ensiaSt1 = ensiaSt.get();
-            ensiaSt1.setState(STATE.ACTIF);
-            ensiastRepository.saveAndFlush(ensiaSt1);
-            return "Logged successfully";
-        } else {
-            return "Password error";
-        }
+        ENSIASt ensiaSt1 = new ENSIASt(ensiaSt);
+        ensiaSt1.setState(State.ACTIF);
+        ensiastRepository.saveAndFlush(ensiaSt1);
+        var jwtToken = jwtService.generateToken(ensiaSt1);
+        return AuthResponse.builder()
+                .token(jwtToken)
+                .build();
+//        String psswd = request.getPassword();
+//        String encodedPsswd = ensiaSt.get().getPassword();
+//        boolean isPsswdCorrect = bCryptPasswordEncoder.matches(psswd,encodedPsswd);
+//        //psswd.equals(encodedPsswd)
+//        if(isPsswdCorrect){
+//            ENSIASt ensiaSt1 = ensiaSt.get();
+//            ensiaSt1.setState(STATE.ACTIF);
+//            ensiastRepository.saveAndFlush(ensiaSt1);
+//            return "Logged successfully";
+//        } else {
+//            return "Password error";
+//        }
     }
-
     @Override
     public List<ENSIASt> findAll() {
         return ensiastRepository.findAll();
@@ -76,12 +107,11 @@ public class ENSIAStService implements IENSIAStSerivces {
 
     @Override
     public Optional<ENSIASt>  findByEmail(String email) {
-        Optional<ENSIASt> ensiaSt = ensiastRepository.findByEmail(email);
-        return ensiaSt;
+        return ensiastRepository.findByEmail(email);
     }
 
     @Override
-    public Optional<ENSIASt> findByLastName(String lastName) {
+    public Optional<List<ENSIASt>> findByLastName(String lastName) {
         return ensiastRepository.findByLastName(lastName);
     }
 

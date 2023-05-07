@@ -10,9 +10,8 @@ import java.util.Optional;
 public interface EnsiastRepository extends JpaRepository<ENSIASt, Integer> {
 
     public Optional<ENSIASt>  findByEmail(String email);
-
     public Optional<ENSIASt> findByEmailAndPassword(String email,String password);
-    public Optional<ENSIASt> findByLastName(String lastName);
+    public Optional<List<ENSIASt>> findByLastName(String lastName);
     public Optional<List<ENSIASt>> findByPromo(Integer promo);
     public Optional<List<ENSIASt>> findByPromoAndField(Integer promo, String field);
     public Optional<List<ENSIASt>> findByField(String field);

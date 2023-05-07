@@ -1,6 +1,7 @@
 package com.ENSIAS.controller;
 
 
+import com.ENSIAS.model.AuthResponse;
 import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.LoginRequest;
 import com.ENSIAS.model.RegistrationRequest;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,10 +31,7 @@ public class ENSIAStController {
     @PostMapping("/signup")
     public ResponseEntity<String> registerENSIASt(@RequestBody RegistrationRequest request){
         ENSIASt ensiaSt = ensiaStService.registerENSIASt(request);
-        if(ensiaSt==null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("This email is already registered");
-        }
-        return ResponseEntity.ok("ENSIASt created");
+        return ensiaStService.checkRegistration(ensiaSt);
     }
 
     @GetMapping("/signup")
@@ -41,9 +40,8 @@ public class ENSIAStController {
     }
 
 
-    //Changed the return type
     @PostMapping("/login")
-    public String loginENSIASt(@RequestBody LoginRequest request){
+    public AuthResponse loginENSIASt(@RequestBody LoginRequest request){
         return ensiaStService.login(request);
     }
 
@@ -57,52 +55,58 @@ public class ENSIAStController {
         return "it's logOUT";
     }
 
-    @GetMapping("/ENSAISts")
+    @GetMapping("/ENSIASts")
     public List<ENSIASt> findAll(){
         return ensiaStService.findAll();
     }
 
-    @GetMapping("tests")
+    @GetMapping("/tests")
     public String test(){
         return "test";
     }
 
-    @GetMapping("ENSIASts/{lastName}")
-    public String findByLastName(@PathVariable String lastName ){
-       Optional<ENSIASt> ensiaSt = ensiaStService.findByLastName(lastName);
-       if (ensiaSt.isPresent()){
-           return ensiaSt.get().getLastName();
-       }
-       else {
-           return String.format("%s doesn't exist",lastName);
-       }
+    @GetMapping("/ENSIASts/lastnames")
+    public List<String> findByLastName(@RequestParam(value = "lastName") String lastName ){
+        Optional<List<ENSIASt>> ensiaSt = ensiaStService.findByLastName(lastName);
+        return ensiaSt
+                .stream()
+                .flatMap(List::stream)
+                .map(ENSIASt::toString)
+                .toList();
     }
 
-    @GetMapping("ENSIASts/{promo}")
-    public List<ENSIASt> findByPromo(@PathVariable Integer promo){
+    @GetMapping("/ENSIASts/promos")
+    public List<ENSIASt> findByPromo(@RequestParam(value = "promo") Integer promo){
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByPromo(promo);
-        List<ENSIASt> ensiaStList = new ArrayList<>();
-        ensiaSts.orElse(Collections.emptyList()).addAll(ensiaStList);
-        return ensiaStList;
+        return ensiaSts
+                .stream()
+                .flatMap(List::stream)
+                //.map(ENSIASt::toString)
+                .toList();
     }
 
-    @GetMapping("ENSIASts/{promo}/{field}")
+    @GetMapping("/ENSIASts/{promo}")
     public List<ENSIASt> findByPromoAndField(@PathVariable(value = "promo") Integer promo,
-                                             @PathVariable(value = "field") String field){
+                                             @RequestParam(value = "field") String field){
 
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByPromoAndField(promo,field);
-        List<ENSIASt> ensiaStList = new ArrayList<>();
-        ensiaSts.orElse(Collections.emptyList()).addAll(ensiaStList);
-        return ensiaStList;
+        return ensiaSts
+                .stream()
+                .flatMap(List::stream)
+                //.map(ENSIASt::toString)
+                .toList();
     }
 
-    @GetMapping("ENSIASts/{field}")
-    public List<ENSIASt> findByField(@PathVariable String field){
+    @GetMapping("/ENSIASts/fields")
+    public List<ENSIASt> findByField(@RequestParam(value = "field") String field){
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findByField(field);
-        List<ENSIASt> ensiaStList = new ArrayList<>();
-        ensiaSts.orElse(Collections.emptyList()).addAll(ensiaStList);
-        return ensiaStList;
+        return ensiaSts
+                .stream()
+                .flatMap(List::stream)
+                //.map(ENSIASt::toString)
+                .toList();
     }
+    ///{field}
 
 
 }
