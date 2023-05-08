@@ -1,6 +1,7 @@
 package com.ENSIAS.security;
 
 
+import com.ENSIAS.enums.Role;
 import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.service.ENSIAStService;

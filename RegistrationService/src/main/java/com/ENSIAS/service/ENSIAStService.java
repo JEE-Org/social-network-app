@@ -158,7 +158,7 @@ public class ENSIAStService implements IENSIAStSerivces {
     }
 
     @Override
-    public Optional<List<ENSIASt>> findActifENSIASts() {
+    public Optional<List<ENSIASt>> findActiveENSIASts() {
         return ensiastRepository.findByState(State.ACTIF);
     }
 
