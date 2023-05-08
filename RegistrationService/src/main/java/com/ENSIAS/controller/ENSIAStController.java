@@ -5,6 +5,8 @@ import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.LoginRequest;
 import com.ENSIAS.model.RegistrationRequest;
 import com.ENSIAS.service.ENSIAStService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +43,18 @@ public class ENSIAStController {
 
     //Changed the return type
     @PostMapping("/login")
-    public String loginENSIASt(@RequestBody LoginRequest request){
-        return ensiaStService.login(request);
+    public ResponseEntity<Object> loginENSIASt(@RequestBody LoginRequest request, HttpServletResponse response){
+        String token = ensiaStService.login(request);
+        if(token == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+        // set token in response header
+        response.setHeader("Authorization", token);
+        // redirect to home page
+        response.setHeader("Location", "/home");
+        return ResponseEntity.status(HttpStatus.FOUND).build();
     }
+
 
     @GetMapping("/login")
     public String login(){
