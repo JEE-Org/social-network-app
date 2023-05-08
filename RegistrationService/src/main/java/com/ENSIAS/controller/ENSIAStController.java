@@ -6,6 +6,8 @@ import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.LoginRequest;
 import com.ENSIAS.model.RegistrationRequest;
 import com.ENSIAS.service.ENSIAStService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

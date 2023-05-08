@@ -110,12 +110,16 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>com.ENSIAS.RegistrationService.RegistrationServiceApplication</mainClass>
+            </configuration>
+        </plugin>
+    </plugins>
     </build>
+
 
 </project>

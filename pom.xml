@@ -19,12 +19,11 @@
 		<module>EurekaServer</module>
 		<module>MailingService</module>
 		<module>PostService</module>
-		<module>MediaService</module>
 	</modules>
 
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>19</java.version>
 		<spring-cloud.version>2022.0.2</spring-cloud.version>
 	</properties>
 	<dependencies>
