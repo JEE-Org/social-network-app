@@ -1,76 +1,72 @@
 package com.ENSIAS.security;
 
 
+import com.ENSIAS.enums.Role;
 import com.ENSIAS.model.ENSIASt;
+import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.service.ENSIAStService;
 import jakarta.persistence.Entity;
+import jakarta.servlet.Filter;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
-//    @Autowired
-//    ENSIAStDetailsService ensiaStDetailsService;
 
-//    @Autowired
-//    ENSIAStService ensiaStService;
+    private final JwtAuthenticationFilter jwtAuthFiter;
+    private final AuthenticationProvider authenticationProvider;
+    private final LogoutHandler logoutHandler;
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//
-//        authProvider.setUserDetailsService(ensiaStDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//
-//        return authProvider;
-//    }
-
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService(ensiaStDetailsService)
-//                .passwordEncoder(passwordEncoder);
-//    }
-
+    @Autowired
+    UserDetailsService ensiaStDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable()
-                .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/home","/signup", "/login").permitAll()
-                                //.requestMatchers("/ENSIASts").hasAnyAuthority("ADMIN")
-                                .anyRequest().authenticated()
-//                ).formLogin(
-//                        form -> form
-//                                .loginPage("/login")
-//                                .defaultSuccessUrl("/home")
-//                                //.usernameParameter("email")
-//                                //.passwordParameter("password")
-//                                .permitAll()
-                ).logout(
-                        logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/checkout"))
-                                .permitAll()
-                );
+                .authorizeHttpRequests()
+                .requestMatchers("/ENSIASts/home",
+                        "/authentication/signup",
+                        "/authentication/login")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFiter,UsernamePasswordAuthenticationFilter.class)
+                .logout()
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler((req,resp,auth) -> SecurityContextHolder.clearContext());
+
         return http.build();
     }
+
+
+
+
 
 }
