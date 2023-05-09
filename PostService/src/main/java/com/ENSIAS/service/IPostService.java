@@ -12,7 +12,8 @@ import java.util.List;
 public interface IPostService {
 
     public Post createPost(PostRequest postRequest);
-    public void deletePost(String postId, String username);
+    public String deletePost(Integer postId, String email);
+    public String updatePost(Integer postId, PostRequest request);
     public List<Post> postsByENSIASt(String ensiast);
 
 

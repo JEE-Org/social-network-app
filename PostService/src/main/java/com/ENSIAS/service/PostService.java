@@ -2,23 +2,59 @@ package com.ENSIAS.service;
 
 import com.ENSIAS.model.Post;
 import com.ENSIAS.model.PostRequest;
+import com.ENSIAS.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class PostService implements IPostService {
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Override
     public Post createPost(PostRequest postRequest) {
-        return null;
+        Post post = Post.builder()
+                .caption(postRequest.getCaption())
+                .createdAt(Instant.now())
+                .ensiastEmail("test@gmail.com")//to change
+                .build();
+        postRepository.saveAndFlush(post);
+        return post;
     }
 
     @Override
-    public void deletePost(String postId, String username) {
+    public String deletePost(Integer postId, String email) {
 
+        Optional<Post> ensiast = postRepository.findById(postId);
+        String ensiastEmail = postRepository.findById(postId).get().getEnsiastEmail();
+        if(ensiast.isPresent()
+        && ensiastEmail.equals(email)){
+            postRepository.delete(ensiast.get());
+            return "Post deleted";
+        }
+        return "Post not found";
+    }
+
+    @Override
+    public String updatePost(Integer postId, PostRequest request){
+        if(postRepository.findById(postId).isPresent())
+            {
+                Post post = postRepository.findById(postId).get();
+                post.setCaption(request.getCaption());
+                post.setUpdatedAt(Instant.now());
+                postRepository.saveAndFlush(post);
+                return "Post updated";
+            }
+        return "Post couldn't be updated";
     }
 
     @Override
     public List<Post> postsByENSIASt(String ensiast) {
-        return null;
+        return postRepository.findByEnsiastEmailOrderByCreatedAtDesc(ensiast);
     }
 }

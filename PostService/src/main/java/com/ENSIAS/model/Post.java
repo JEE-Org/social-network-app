@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
@@ -29,13 +28,13 @@ public class Post {
     private Instant updatedAt;
 
     @CreatedBy
-    private String ensiast;
-
-    @LastModifiedBy
-    private String lastModifiedBy;
+    private String ensiastEmail;
 
     @NonNull
     private String caption;
 
+    public Post(@NonNull String caption){
+        this.caption=caption;
+    }
 
 }
