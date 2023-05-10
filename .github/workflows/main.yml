@@ -34,5 +34,5 @@ jobs:
           SPRING_DATASOURCE_USERNAME: myuser
           SPRING_DATASOURCE_PASSWORD: mypassword
 
-      #- name: Build and run frontend
-       # run: ng serve
+      - name: Build and run frontend
+        run: ng serve
