@@ -8,6 +8,7 @@ import com.ENSIAS.repository.TokenRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,7 +17,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +42,15 @@ public class ENSIAStService implements IENSIAStSerivces {
 
     private final AuthenticationManager authenticationManager;
 
-    private final String topic="registration";
+//    @Value("${spring.kafka.topic1.name}")
+//    private final String topic1;
+//    @Value("${spring.kafka.topic2.name}")
+//    private final String topic2;
+
 
     private final KafkaTemplate<String,ENSIASt> kafkaTemplate;
+
+    private final KafkaTemplate<String,PostMessage> kafkaPostTemplate;
 
     @Override
     public ENSIASt registerENSIASt(RegistrationRequest request) {
@@ -55,13 +65,33 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .state(State.INACTIF)
                 .role(Role.USER)
                 .build();
+
+        sendENSIASt(ensiaSt,"registration");
+        log.info(String.format("ENSIASt sent : %s",ensiaSt.toString()));
+        ensiastRepository.saveAndFlush(ensiaSt);
+        return ensiaSt;
+    }
+
+    public void sendENSIASt(ENSIASt ensiaSt, String topic){
         Message<ENSIASt> message = MessageBuilder
                 .withPayload(ensiaSt)
                 .setHeader(KafkaHeaders.TOPIC,topic)
                 .build();
-        log.info(String.format("ENSIASt sent : %s",ensiaSt.toString()));
         kafkaTemplate.send(message);
-        ensiastRepository.saveAndFlush(ensiaSt);
+    }
+
+    public void sendPostMessage(PostMessage postMessage){
+        Message<PostMessage> message = MessageBuilder
+                .withPayload(postMessage)
+                .setHeader(KafkaHeaders.TOPIC,"posts")
+                .build();
+        kafkaPostTemplate.send(message);
+    }
+    public ENSIASt currentENSIASt(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object object = auth.getPrincipal();
+        String ensiastEmail = ((UserDetails) object).getUsername();
+        ENSIASt ensiaSt = new  ENSIASt(findByEmail(ensiastEmail));
         return ensiaSt;
     }
     

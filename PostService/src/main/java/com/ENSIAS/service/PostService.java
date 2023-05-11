@@ -1,9 +1,12 @@
 package com.ENSIAS.service;
 
+import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.Post;
+import com.ENSIAS.model.PostMessage;
 import com.ENSIAS.model.PostRequest;
 import com.ENSIAS.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,12 +19,24 @@ public class PostService implements IPostService {
     @Autowired
     private PostRepository postRepository;
 
+    @KafkaListener(
+            topics = "${spring.kafka.topic2.name}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    public void consume(PostMessage postMessage){
+        String message = postMessage.getMessage();
+        ENSIASt ensiaSt = postMessage.getEnsiaSt();
+        String email = ensiaSt.getEmail();
+        PostRequest postRequest = postMessage.getRequest();
+        createPost(postRequest,email);
+    }
+
     @Override
-    public Post createPost(PostRequest postRequest) {
+    public Post createPost(PostRequest postRequest,String email) {
         Post post = Post.builder()
                 .caption(postRequest.getCaption())
                 .createdAt(Instant.now())
-                .ensiastEmail("test@gmail.com")//to change
+                .ensiastEmail(email)//to change
                 .build();
         postRepository.saveAndFlush(post);
         return post;

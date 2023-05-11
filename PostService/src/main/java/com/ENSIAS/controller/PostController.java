@@ -26,13 +26,13 @@ public class PostController {
         return "hello world";
     }
 
-    @PostMapping("/post")
-    public String createPost(@RequestBody PostRequest postRequest){
-        if(postService.createPost(postRequest)!=null){
-            return "Post created";
-        }
-        return "Post not created";
-    }
+//    @PostMapping("/post")
+//    public String createPost(@RequestBody PostRequest postRequest){
+//        if(postService.createPost(postRequest)!=null){
+//            return "Post created";
+//        }
+//        return "Post not created";
+//    }
 
     @PutMapping("/update/{id}")
     public String updatePost(@PathVariable Integer id,
