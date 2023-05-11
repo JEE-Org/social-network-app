@@ -35,4 +35,4 @@ jobs:
         run: |
           cd front-end/front-end
           npm install
-          ng build --prod
+          ng build --configuration=production
