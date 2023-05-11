@@ -17,9 +17,11 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 'adopt@1.19'
+          distribution: 'adopt'
 
       - name: Build and run backend
         run: |
+          
           mvn clean install
 
         env:
@@ -28,4 +30,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: mypassword
 
       - name: Build and run frontend
-        run: ng serve
+        run: |
+          cd .\front-end\front-end\
+          npm install
+          ng serve
