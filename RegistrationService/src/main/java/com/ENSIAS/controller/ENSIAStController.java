@@ -81,37 +81,41 @@ public class ENSIAStController {
     public void createPost(@RequestBody PostRequest request){
         String message = "CREATE";
         ENSIASt ensiaSt = ensiaStService.currentENSIASt();
-        ensiaStService.sendPostMessage(
-                new PostMessage(
-                        message,
-                        request,
-                        ensiaSt
-                )
-        );
+
+        PostMessage postMessage = new PostMessage();
+        postMessage.setMessageType(message);
+        postMessage.setEnsiaSt(ensiaSt);
+        postMessage.setRequest(request);
+
+        ensiaStService.sendPostMessage(postMessage);
         log.info(String.format("%s created a post",ensiaSt.getEmail()));
     }
-//    @PutMapping("/post/update")
-//    public void updatePost(){
-//        String message = "UPDATE";
-//        ENSIASt ensiaSt = ensiaStService.currentENSIASt();
-//        PostMessage postMessage = new PostMessage(
-//                message,
-//                ensiaSt
-//        );
-//        ensiaStService.sendENSIASt(ensiaSt,topic2);
-//        log.info(String.format("%s updated a post",ensiaSt.getEmail()));
-//    }
-//    @DeleteMapping("/post/delete")
-//    public void deletePost(){
-//        String message = "DELETE";
-//        ENSIASt ensiaSt = ensiaStService.currentENSIASt();
-//        PostMessage postMessage = new PostMessage(
-//                message,
-//                ensiaSt
-//        );
-//        ensiaStService.sendPostMessage(postMessage);
-//        log.info(String.format("%s deleted a post",ensiaSt.getEmail()));
-//    }
+    @PutMapping("/post/update/{id}")
+    public void updatePost(@RequestBody PostRequest request,
+                           @PathVariable Integer id){
+        String message = "UPDATE";
+        ENSIASt ensiaSt = ensiaStService.currentENSIASt();
+        PostRequest postRequest = new PostRequest(request.getCaption(),id);
+        PostMessage postMessage = new PostMessage(
+                message,
+                postRequest,
+                ensiaSt
+        );
+        ensiaStService.sendPostMessage(postMessage);
+        log.info(String.format("%s updated a post",ensiaSt.getEmail()));
+    }
+    @DeleteMapping("/post/delete/{id}")
+    public void deletePost(@PathVariable Integer id){
+        String message = "DELETE";
+        ENSIASt ensiaSt = ensiaStService.currentENSIASt();
+        PostMessage postMessage = new PostMessage(
+                message,
+                new PostRequest(id),
+                ensiaSt
+        );
+        ensiaStService.sendPostMessage(postMessage);
+        log.info(String.format("%s deleted a post",ensiaSt.getEmail()));
+    }
 //    @GetMapping("/post/me")
 //    public void myPosts(){
 //        String message = "ME";

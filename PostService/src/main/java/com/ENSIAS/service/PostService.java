@@ -24,11 +24,31 @@ public class PostService implements IPostService {
             groupId = "${spring.kafka.consumer.group-id}"
     )
     public void consume(PostMessage postMessage){
-        String message = postMessage.getMessage();
+        String message = postMessage.getMessageType();
         ENSIASt ensiaSt = postMessage.getEnsiaSt();
         String email = ensiaSt.getEmail();
         PostRequest postRequest = postMessage.getRequest();
-        createPost(postRequest,email);
+        Integer id = postRequest.getPostId();
+        switch (message) {
+            case "CREATE" -> createPost(postRequest, email);
+            case "UPDATE" -> updatePost(id, postRequest, email);
+            case "DELETE" -> deletePost(id, email);
+        }
+//        if(message.equals("CREATE")) {
+//            createPost(postRequest, email);
+//        }else{
+//            if(message.equals("UPDATE")){
+//                updatePost(id, postRequest, email);
+//            }
+//            else{
+//                if(message.equals("DELETE")){
+//                    deletePost(id,email);
+//                }
+//            }
+//        }
+        System.out.println(message);
+        System.out.println(email);
+        System.out.println(postRequest.getCaption());
     }
 
     @Override
@@ -36,7 +56,7 @@ public class PostService implements IPostService {
         Post post = Post.builder()
                 .caption(postRequest.getCaption())
                 .createdAt(Instant.now())
-                .ensiastEmail(email)//to change
+                .ensiastEmail(email)
                 .build();
         postRepository.saveAndFlush(post);
         return post;
@@ -45,26 +65,31 @@ public class PostService implements IPostService {
     @Override
     public String deletePost(Integer postId, String email) {
 
-        Optional<Post> ensiast = postRepository.findById(postId);
+        Optional<Post> post = postRepository.findById(postId);
         String ensiastEmail = postRepository.findById(postId).get().getEnsiastEmail();
-        if(ensiast.isPresent()
+        if(post.isPresent()
         && ensiastEmail.equals(email)){
-            postRepository.delete(ensiast.get());
+            postRepository.delete(post.get());
             return "Post deleted";
         }
         return "Post not found";
     }
 
     @Override
-    public String updatePost(Integer postId, PostRequest request){
-        if(postRepository.findById(postId).isPresent())
-            {
-                Post post = postRepository.findById(postId).get();
-                post.setCaption(request.getCaption());
-                post.setUpdatedAt(Instant.now());
-                postRepository.saveAndFlush(post);
-                return "Post updated";
-            }
+    public String updatePost(
+            Integer postId,
+            PostRequest request,
+            String email){
+        Optional<Post> post = postRepository.findById(postId);
+        String ensiastEmail = postRepository.findById(postId).get().getEnsiastEmail();
+        if(post.isPresent()
+                && ensiastEmail.equals(email)){
+            Post post2 = postRepository.findById(postId).get();
+            post2.setCaption(request.getCaption());
+            post2.setUpdatedAt(Instant.now());
+            postRepository.saveAndFlush(post2);
+            return "Post updated";
+        }
         return "Post couldn't be updated";
     }
 

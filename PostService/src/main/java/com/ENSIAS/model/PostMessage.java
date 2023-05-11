@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostMessage {
-    private String message;
+    private String messageType;
     private ENSIASt ensiaSt;
     private PostRequest request;
 }

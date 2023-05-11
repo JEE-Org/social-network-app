@@ -91,8 +91,7 @@ public class ENSIAStService implements IENSIAStSerivces {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Object object = auth.getPrincipal();
         String ensiastEmail = ((UserDetails) object).getUsername();
-        ENSIASt ensiaSt = new  ENSIASt(findByEmail(ensiastEmail));
-        return ensiaSt;
+        return new  ENSIASt(findByEmail(ensiastEmail));
     }
     
     public ResponseEntity<String> checkRegistration(ENSIASt ensiaSt){
