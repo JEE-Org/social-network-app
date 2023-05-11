@@ -1,9 +1,6 @@
 package com.ENSIAS.service;
 
-import com.ENSIAS.model.AuthResponse;
-import com.ENSIAS.model.ENSIASt;
-import com.ENSIAS.model.LoginRequest;
-import com.ENSIAS.model.RegistrationRequest;
+import com.ENSIAS.model.*;
 import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.repository.TokenRepository;
 import lombok.AllArgsConstructor;
@@ -20,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.ENSIAS.enums.Role;
 import com.ENSIAS.enums.State;
@@ -27,10 +25,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jmx.export.annotation.ManagedMetric;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.mockito.MockitoAnnotations;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -151,60 +152,95 @@ class ENSIAStServiceTest {
     @Test
     void loginShouldReturnAuthResponseWithAccessTokenWhenEmailAndPasswordAreCorrect() {
         // given
-        String email = "test@example.com";
+        String email = "test@elmrabti.com";
         String password = "password";
         ENSIASt ensiaSt = new ENSIASt();
         ensiaSt.setEmail(email);
-        ensiaSt.setPassword(bCryptPasswordEncoder.encode(password));
+        ensiaSt.setPassword(password);
         when(ensiastRepository.findByEmail(email)).thenReturn(Optional.of(ensiaSt));
+
+        // Mock the authenticationManager.authenticate() method call
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(null);
+        when(jwtService.generateToken(any())).thenReturn("ABCDF") ;
+
         LoginRequest request = new LoginRequest();
         request.setEmail(email);
         request.setPassword(password);
 
-        // when
         AuthResponse result = ensiaStService.login(request);
 
         // then
         assertNotNull(result);
         assertNotNull(result.getAccessToken());
         verify(ensiastRepository, times(1)).findByEmail(email);
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+
     }
 
 
+
     @Test
-    void loginShouldReturnAuthResponseWithAccessTokenWhenEmailAndPasswordNotCorrect() {
+    void loginShouldNotReturnAuthResponseWhenPasswordNotCorrect() {
         // given
         String email = "test@elmrabti.com";
         String password = "password";
-        String email2 = "hamza@elmrabti.com";
-        ENSIASt ensiaSt = new ENSIASt();
-        ENSIASt ensiaSt2 = new ENSIASt() ;
-        ensiaSt.setEmail(email);
-        ensiaSt.setPassword(bCryptPasswordEncoder.encode(password));
-        ensiaSt2.setEmail(email2);
-        ensiaSt2.setPassword(bCryptPasswordEncoder.encode("555"));
-        when(ensiastRepository.findByEmail(email)).thenReturn(Optional.of(ensiaSt));
         LoginRequest request = new LoginRequest();
         request.setEmail(email);
         request.setPassword(password);
+
+        //Ensiast in database with other password
+        ENSIASt ensiaSt = new ENSIASt() ;
+        ensiaSt.setEmail(email);
+        String pass = "pass" ;
+        ensiaSt.setPassword(pass);
+
+        when(ensiastRepository.findByEmail(email)).thenReturn(Optional.of(ensiaSt));
 
         // when
         AuthResponse result = ensiaStService.login(request);
 
         // then
-        //assertNotNull(result);
-        //assertNotNull(result.getAccessToken());
-        //verify(ensiastRepository, times(1)).saveAndFlush(ensiaSt);
-        verify(ensiastRepository, times(1)).findByEmail(email) ;
+        assertNotNull(result);
+        assertNull(result.getAccessToken());
+        verify(ensiastRepository, times(1)).findByEmail(email);
     }
 
 
-    @Test
-    void login() {
-    }
+
 
     @Test
     void findAll() {
+
+        ENSIASt ensiaSt1 = new ENSIASt();
+        ENSIASt ensiaSt2 = new ENSIASt();
+        ENSIASt ensiaSt3 = new ENSIASt();
+
+        ensiaSt1.setFirstName("Hamza");
+        ensiaSt1.setLastName("Elmrabti");
+        ensiaSt1.setEmail("hamza@elmrabti.com");
+
+        ensiaSt2.setFirstName("Yassine");
+        ensiaSt2.setLastName("Benabdellah");
+        ensiaSt2.setEmail("yassine@gmail.com");
+
+        ensiaSt2.setFirstName("Zineb");
+        ensiaSt2.setLastName("Cherkaoui");
+        ensiaSt2.setEmail("zineb@gmail.com");
+
+        List<ENSIASt> ensiaStList = Arrays.asList(ensiaSt1, ensiaSt2, ensiaSt3);
+        //When
+        when(ensiastRepository.findAll()).thenReturn(ensiaStList) ;
+        //Call
+        List<ENSIASt> result = ensiaStService.findAll();
+
+        //Verify
+        assertFalse(result.isEmpty());
+        assertEquals(3, result.size());
+        assertEquals(ensiaStList, result);
+        verify(ensiastRepository, times(1)).findAll();
+
+
     }
 
     //@Test
@@ -213,21 +249,142 @@ class ENSIAStServiceTest {
 
     @Test
     void findByLastName() {
+        String lastName = "Elmrabti" ;
+
+        ENSIASt ensiaSt1 = new ENSIASt();
+        ENSIASt ensiaSt2 = new ENSIASt();
+
+        ensiaSt1.setFirstName("Hamza");
+        ensiaSt1.setLastName(lastName);
+        ensiaSt1.setEmail("hamza@elmrabti.com");
+
+        ensiaSt2.setFirstName("Yassine");
+        ensiaSt2.setLastName(lastName);
+        ensiaSt2.setEmail("yassine@gmail.com");
+
+        List<ENSIASt> ensiaStList = Arrays.asList(ensiaSt1, ensiaSt2);
+        //When
+        when(ensiastRepository.findByLastName(lastName)).thenReturn(Optional.of(ensiaStList)) ;
+        //Call
+        Optional<List<ENSIASt>> result = ensiaStService.findByLastName(lastName);
+
+        //Verify
+        assertTrue(result.isPresent());
+        assertEquals(2, result.get().size());
+        assertEquals(ensiaStList, result.get());
+        verify(ensiastRepository, times(1)).findByLastName(lastName);
+
+
     }
 
     @Test
     void findByPromo() {
+
+        int promo =2024 ;
+        ENSIASt ensiaSt1 = new ENSIASt();
+        ENSIASt ensiaSt2 = new ENSIASt();
+
+        ensiaSt1.setFirstName("Hamza");
+        ensiaSt1.setLastName("Elmrabti");
+        ensiaSt1.setPromo(promo);
+        ensiaSt1.setEmail("hamza@elmrabti.com");
+
+        ensiaSt2.setFirstName("Yassine");
+        ensiaSt2.setLastName("Alami");
+        ensiaSt2.setPromo(promo);
+        ensiaSt2.setEmail("yassine@gmail.com");
+
+        List<ENSIASt> ensiaStList = Arrays.asList(ensiaSt1, ensiaSt2);
+        //When
+        when(ensiastRepository.findByPromo(promo)).thenReturn(Optional.of(ensiaStList)) ;
+        //Call
+        Optional<List<ENSIASt>> result = ensiaStService.findByPromo(promo);
+
+        //Verify
+        assertTrue(result.isPresent());
+        assertEquals(2, result.get().size());
+        assertEquals(ensiaStList, result.get());
+        verify(ensiastRepository, times(1)).findByPromo(promo);
+
+
+
+
     }
+
 
     @Test
-    void findByPromoAndField() {
+    void testFindByPromoAndField() {
+        // Test data
+        int promo =2024 ;
+        String field = "Computer Science" ;
+        ENSIASt ensiaSt1 = new ENSIASt();
+        ENSIASt ensiaSt2 = new ENSIASt();
+
+        ensiaSt1.setFirstName("Hamza");
+        ensiaSt1.setLastName("Elmrabti");
+        ensiaSt1.setPromo(promo);
+        ensiaSt1.setEmail("hamza@elmrabti.com");
+        ensiaSt1.setField(field);
+        ensiaSt1.setPassword("password");
+
+        ensiaSt2.setFirstName("Yassine");
+        ensiaSt2.setLastName("Alami");
+        ensiaSt2.setPromo(promo);
+        ensiaSt2.setEmail("yassine@gmail.com");
+        ensiaSt2.setField(field);
+        ensiaSt2.setPassword("password");
+
+        List<ENSIASt> ensiaStList = Arrays.asList(ensiaSt1, ensiaSt2);
+
+        when(ensiastRepository.findByPromoAndField(promo, field)).thenReturn(Optional.of(ensiaStList)) ;
+
+        //Call
+        Optional<List<ENSIASt>> result = ensiaStService.findByPromoAndField(promo, field);
+
+        //Verify
+        assertTrue(result.isPresent());
+        assertEquals(2, result.get().size());
+        assertEquals(ensiaStList, result.get());
+        verify(ensiastRepository, times(1)).findByPromoAndField(promo, field);
+
     }
+
+
+
 
     @Test
-    void findByField() {
+    public void testFindByField() {
+        String field = "Computer Science";
+        ENSIASt ensiaSt1 = new ENSIASt();
+        ENSIASt ensiaSt2 = new ENSIASt();
 
+        ensiaSt1.setFirstName("Hamza");
+        ensiaSt1.setLastName("Elmrabti");
+        ensiaSt1.setPromo(2024);
+        ensiaSt1.setEmail("hamza@elmrabti.com");
+        ensiaSt1.setField(field);
+
+        ensiaSt2.setFirstName("Yassine");
+        ensiaSt2.setLastName("Alami");
+        ensiaSt2.setPromo(2025);
+        ensiaSt2.setEmail("yassine@gmail.com");
+        ensiaSt2.setField(field);
+
+        List<ENSIASt> ensiaStList = Arrays.asList(ensiaSt1, ensiaSt2);
+
+        //When
+        when(ensiastRepository.findByField(field)).thenReturn(Optional.of(ensiaStList));
+
+        //Call the service
+        Optional<List<ENSIASt>> result = ensiaStService.findByField(field);
+
+        //Verify
+        assertTrue(result.isPresent());
+        assertEquals(ensiaStList, result.get());
+        verify(ensiastRepository, times(1)).findByField(field);
 
     }
+
 
     @Test
     void findActiveENSIAStsShouldReturnActiveENSIASts() {
