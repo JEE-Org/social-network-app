@@ -28,6 +28,9 @@ jobs:
           SPRING_DATASOURCE_USERNAME: myuser
           SPRING_DATASOURCE_PASSWORD: mypassword
 
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
       - name: Build and run frontend
         run: |
           cd front-end/front-end
