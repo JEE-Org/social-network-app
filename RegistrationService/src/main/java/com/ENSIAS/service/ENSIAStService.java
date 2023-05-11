@@ -6,9 +6,14 @@ import com.ENSIAS.model.*;
 import com.ENSIAS.repository.EnsiastRepository;
 import com.ENSIAS.repository.TokenRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +24,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ENSIAStService implements IENSIAStSerivces {
 
     private final EnsiastRepository ensiastRepository;
@@ -31,6 +37,10 @@ public class ENSIAStService implements IENSIAStSerivces {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final String topic="registration";
+
+    private final KafkaTemplate<String,ENSIASt> kafkaTemplate;
 
     @Override
     public ENSIASt registerENSIASt(RegistrationRequest request) {
@@ -45,11 +55,13 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .state(State.INACTIF)
                 .role(Role.USER)
                 .build();
+        Message<ENSIASt> message = MessageBuilder
+                .withPayload(ensiaSt)
+                .setHeader(KafkaHeaders.TOPIC,topic)
+                .build();
+        log.info(String.format("ENSIASt sent : %s",ensiaSt.toString()));
+        kafkaTemplate.send(message);
         ensiastRepository.saveAndFlush(ensiaSt);
-//        var jwtToken = jwtService.generateToken(ensiaSt);
-//        return AuthResponse.builder()
-//                .token(jwtToken)
-//                .build();
         return ensiaSt;
     }
     

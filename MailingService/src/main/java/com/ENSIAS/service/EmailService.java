@@ -4,6 +4,7 @@ import com.ENSIAS.model.ENSIASt;
 import com.ENSIAS.model.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,15 @@ public class EmailService implements IEmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
-
+    private final String topic="registration";
     @Override
+    @KafkaListener(
+            topics = topic,
+            groupId = "myGroup"
+    )
     public String sendEmail(ENSIASt ensiaSt) {
         String email = ensiaSt.getEmail();
-        String body = "Dear,"+ensiaSt.getLastName()+" "+ensiaSt.getFirstName()+" \nWe welcome you for joining " +
+        String body = "Dear"+ensiaSt.getLastName()+" "+ensiaSt.getFirstName()+",\n"+"\nWe welcome you for joining " +
                 "our ENSIAS Network family ! \n"+"It's our pleasure to bring ENSIASts together ! \n"+
                 "\nENSIASt un jour ENSIASt pour toujours";
         String subject = "Welcome to ENSIAS Network !";
