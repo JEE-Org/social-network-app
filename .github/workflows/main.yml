@@ -21,7 +21,6 @@ jobs:
 
       - name: Build and run backend
         run: |
-          
           mvn clean install
 
         env:
@@ -31,6 +30,6 @@ jobs:
 
       - name: Build and run frontend
         run: |
-          cd .\front-end\front-end\
+          cd front-end/front-end
           npm install
           ng serve
