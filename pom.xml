@@ -19,6 +19,7 @@
 		<module>EurekaServer</module>
 		<module>MailingService</module>
 		<module>PostService</module>
+		<module>API-Gateway</module>
 	</modules>
 
 
@@ -45,6 +46,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-reporter-brave</artifactId>
 		</dependency>
 
 	</dependencies>

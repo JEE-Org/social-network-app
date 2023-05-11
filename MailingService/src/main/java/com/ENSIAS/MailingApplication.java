@@ -16,23 +16,21 @@ public class MailingApplication {
         SpringApplication.run(MailingApplication.class,args);
     }
 
-
-    @Autowired
-    private EmailService emailService;
-
-    Email email = new Email(
-            "haytamelhayani@gmail.com",
-            "BODY",
-            "Subjeect"
-    );
-    ENSIASt ensiaSt = new ENSIASt(
-            "haitam",
-            "elhayni",
-            "haytamelhayani@gmail.com"
-    );
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void sendEmail(){
-        emailService.sendEmail(ensiaSt);
-    }
+//    @Autowired
+//    private EmailService emailService;
+//
+//    Email email = new Email(
+//            "haytamelhayani@gmail.com",
+//            "BODY",
+//            "Subjeect"
+//    );
+//    ENSIASt ensiaSt = new ENSIASt(
+//            "haitam",
+//            "elhayni",
+//            "haytamelhayani@gmail.com"
+//    );
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void sendEmail(){
+//        emailService.sendEmail(ensiaSt);
+//    }
 }
