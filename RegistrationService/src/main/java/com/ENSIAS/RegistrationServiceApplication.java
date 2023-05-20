@@ -23,7 +23,7 @@ public class RegistrationServiceApplication implements CommandLineRunner {
         RegistrationRequest request = new RegistrationRequest(
                 "haitam",
                 "elhayani",
-                "haitam@test.com",
+                "haytamelhayani@gmail.com",
                 2024,
                 "GL",
                 "test"
