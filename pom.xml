@@ -15,11 +15,11 @@
 	<name>SocialNetwork</name>
 	<description>Demo project for Spring Boot</description>
 	<modules>
-		<module>RegistrationService</module>
-		<module>EurekaServer</module>
-		<module>MailingService</module>
-		<module>PostService</module>
-		<module>API-Gateway</module>
+<!--		<module>RegistrationService</module>-->
+<!--		<module>EurekaServer</module>-->
+<!--		<module>MailingService</module>-->
+<!--		<module>PostService</module>-->
+<!--		<module>API-Gateway</module>-->
 	</modules>
 
 
