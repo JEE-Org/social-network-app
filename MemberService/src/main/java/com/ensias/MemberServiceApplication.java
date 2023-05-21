@@ -25,10 +25,13 @@ public class MemberServiceApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		 
 		repositoryRestConfiguration.exposeIdsFor(Member.class) ;
-		
-		
-		
+
+
+
 		memberRepository.save(new Member(null, "Alami", "Mohamed", "2025", "GL", null));
+		memberRepository.save(new Member(null, "Ibrahimi", "Sanae", "2025", "GL", null));
+		memberRepository.save(new Member(null, "Benjelloune", "Oussama", "2025", "GL", null));
+		memberRepository.save(new Member(null, "Berrada", "Leila", "2025", "GL", null));
 
 		
 	}

@@ -20,8 +20,8 @@
 		<module>MailingService</module>
 		<module>PostService</module>
 		<module>MemberService</module>
-    		<module>MessageService</module>
-    	  	<module>gateway</module>
+		<module>MessagesService</module>
+		<module>gateway</module>
 	</modules>
 
 
