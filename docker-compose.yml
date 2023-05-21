@@ -125,7 +125,7 @@ services:
 
   #post-service
   post-service:
-    image: haitamelhayani2002post-service
+    image: haitamelhayani2002/post-service
 #    build: ./postservice
     container_name: post-service
 #    environment:
