@@ -37,6 +37,11 @@ jobs:
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
 
+      - name: Build EurekaServer Docker image
+        run: |
+            cd EurekaServer/
+            docker build -t eureka-server:latest .
+
       - name: Build MailingService Docker image
         run: |
           cd MailingService/
