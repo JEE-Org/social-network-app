@@ -42,6 +42,11 @@ jobs:
             cd EurekaServer/
             docker build -t eureka-server:latest .
 
+      - name: Build RegistrationService Docker image
+        run: |
+                cd RegistrationService/
+                docker build -t registration-service:latest .
+
       - name: Build MailingService Docker image
         run: |
           cd MailingService/
