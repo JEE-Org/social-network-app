@@ -21,7 +21,7 @@ public class AdminController {
 
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/active")
-    List<String> findActiveENSIASts(){
+    public List<String> findActiveENSIASts(){
         Optional<List<ENSIASt>> ensiaSts = ensiaStService.findActiveENSIASts();
         return ensiaSts
                 .stream()
