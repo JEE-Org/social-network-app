@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: social-network-app-mynet
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/social-network-app-mynet: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/social-network-app-mynet: "true"
