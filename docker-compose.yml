@@ -66,8 +66,8 @@ services:
 
   #eureka-server
   eureka-server:
-    image: eureka-server:latest
-    build: ./eurekaserver
+    image: haitamelhayani2002/eureka-server:latest
+#    build: ./eurekaserver
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -78,8 +78,8 @@ services:
 
   #api-gateway
   api-gateway:
-    image: api-gateway-service
-    build: ./api-gateway
+    image: haitamelhayani2002/api-gateway-service
+#    build: ./api-gateway
     container_name: api-gateway
     ports:
       - "8081:8081"
@@ -93,8 +93,8 @@ services:
 
   #mailing-service
   mailing-service:
-    image: mailing-service
-    build: ./mailingservice
+    image: haitamelhayani2002/mailing-service
+#    build: ./mailingservice
     container_name: mailing-service
     depends_on:
       - eureka-server
@@ -108,8 +108,8 @@ services:
 
   #registration-service
   registration-service:
-    image: registration-service
-    build: ./registrationservice
+    image: haitamelhayani2002/registration-service
+#    build: ./registrationservice
     container_name: registration-service
     depends_on:
       - mysql-db
@@ -125,8 +125,8 @@ services:
 
   #post-service
   post-service:
-    image: post-service
-    build: ./postservice
+    image: haitamelhayani2002post-service
+#    build: ./postservice
     container_name: post-service
 #    environment:
 #      - SPRING_PROFILES_ACTIVE=docker
