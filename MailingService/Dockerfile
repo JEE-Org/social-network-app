@@ -5,6 +5,10 @@ COPY ./.mvn ./.mvn
 COPY ./mvnw ./mvnw
 COPY ./pom.xml ./pom.xml
 
+
+# Grant executable permissions to mvnw script
+RUN chmod +x ./mvnw   
+
 RUN ./mvnw dependency:go-offline -B
 COPY ./src ./src
 

@@ -32,6 +32,21 @@ jobs:
         run: |
           mvn test
 
+      - name: Install Docker CLI
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+
+      - name: Build EurekaServer Docker image
+        run: |
+            cd EurekaServer/
+            docker build -t eureka-server:latest .
+
+      - name: Build MailingService Docker image
+        run: |
+          cd MailingService/
+          docker build -t mailing-service:latest .
+
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
@@ -40,3 +55,4 @@ jobs:
           cd front-end/front-end
           npm install
           ng build --configuration=production
+
