@@ -15,16 +15,16 @@
 	<name>SocialNetwork</name>
 	<description>Demo project for Spring Boot</description>
 	<modules>
-		<module>RegistrationService</module>
-		<module>EurekaServer</module>
-		<module>MailingService</module>
-		<module>PostService</module>
-		<module>API-Gateway</module>
+<!--		<module>RegistrationService</module>-->
+<!--		<module>EurekaServer</module>-->
+<!--		<module>MailingService</module>-->
+<!--		<module>PostService</module>-->
+<!--		<module>API-Gateway</module>-->
 	</modules>
 
 
 	<properties>
-		<java.version>19</java.version>
+		<java.version>17</java.version>
 		<spring-cloud.version>2022.0.2</spring-cloud.version>
 	</properties>
 	<dependencies>
@@ -47,7 +47,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-tracing-bridge-brave</artifactId>
@@ -56,7 +55,6 @@
 			<groupId>io.zipkin.reporter2</groupId>
 			<artifactId>zipkin-reporter-brave</artifactId>
 		</dependency>
-
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -86,5 +84,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
