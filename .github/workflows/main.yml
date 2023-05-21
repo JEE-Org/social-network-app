@@ -34,8 +34,8 @@ jobs:
 
       - name: Install Docker CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install docker.io
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
 
       - name: Build MailingService Docker image
         run: |
@@ -50,3 +50,5 @@ jobs:
           cd front-end/front-end
           npm install
           ng build --configuration=production
+
+          
