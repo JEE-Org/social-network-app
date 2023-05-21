@@ -35,7 +35,7 @@ jobs:
       - name: Install Docker CLI
         run: |
           sudo apt-get update
-          sudo apt-get -y install docker.io
+          sudo apt-get install docker.io
 
       - name: Build MailingService Docker image
         run: |
