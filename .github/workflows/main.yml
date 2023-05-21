@@ -62,6 +62,10 @@ jobs:
                 cd API-Gateway/
                 docker build -t api-gateway:latest .
 
+      - name: Build Docker images and start containers
+        run: |
+                docker-compose up
+
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
