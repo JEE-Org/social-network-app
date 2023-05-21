@@ -34,13 +34,13 @@ jobs:
 
       - name: Install Docker CLI
         run: |
-            sudo apt-get update
-            sudo apt-get -y install docker.io
-  
+          sudo apt-get update
+          sudo apt-get -y install docker.io
+
       - name: Build MailingService Docker image
         run: |
-            cd MailingService/src
-            docker build -t mailing-service:latest MailingService/
+          cd MailingService/src
+          docker build -t mailing-service:latest .
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
