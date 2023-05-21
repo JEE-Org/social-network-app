@@ -52,6 +52,11 @@ jobs:
           cd MailingService/
           docker build -t mailing-service:latest .
 
+      - name: Build PostService Docker image
+        run: |
+            cd PostService/
+            docker build -t post-service:latest .
+
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
