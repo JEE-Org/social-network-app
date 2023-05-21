@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db:
+  mysql-db:
     image: mysql:latest
     restart: always
     environment:
@@ -19,7 +19,7 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
     environment:
-      PMA_HOST: db
+      PMA_HOST: mysql-db
       MYSQL_ROOT_PASSWORD: password
     ports:
       - "8080:80"
@@ -31,6 +31,8 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
+    networks:
+      - mynet
 
   #Inintinlizing kafka
   zookeeper:
@@ -41,6 +43,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - mynet
 
   broker:
     image: confluentinc/cp-kafka:7.0.1
@@ -57,6 +61,86 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - mynet
+
+  #eureka-server
+  eureka-server:
+    image: eureka-server:latest
+    build: ./eurekaserver
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - zipkin
+    networks:
+      - mynet
+
+  #api-gateway
+  api-gateway:
+    image: api-gateway-service
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    depends_on:
+      - zipkin
+      - eureka-server
+    networks:
+      - mynet
+
+  #mailing-service
+  mailing-service:
+    image: mailing-service
+    build: ./mailingservice
+    container_name: mailing-service
+    depends_on:
+      - eureka-server
+      - api-gateway
+      - broker
+      - zipkin
+    ports:
+      - "8094:8094"
+    networks:
+      - mynet
+
+  #registration-service
+  registration-service:
+    image: registration-service
+    build: ./registrationservice
+    container_name: registration-service
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - api-gateway
+      - mailing-service
+      - broker
+      - zipkin
+    ports:
+      - "8090:8090"
+    networks:
+      - mynet
+
+  #post-service
+  post-service:
+    image: post-service
+    build: ./postservice
+    container_name: post-service
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - api-gateway
+      - broker
+      - zipkin
+      - registration-service
+    ports:
+      - "8091:8091"
+    networks:
+      - mynet
 
 volumes:
   db_data:

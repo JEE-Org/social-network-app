@@ -6,13 +6,16 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+#      defaultZone: http://localhost:8761/eureka
+       defaultZone: http://eureka-server:8761/eureka
+
 
 spring:
   application:
     name: api-gateway
   zipkin:
-    base-url: http://localhost:9411
+#    base-url: http://localhost:9411
+    base-url: http://zipkin:9411
     sleuth:
       sampler:
         probability: 1.0
@@ -47,9 +50,11 @@ spring:
           uri: lb://MAILING-SERVICE
           predicates: Path=/mailing/**
         - id: Eureka-server
-          uri: http://localhost:8761
+#          uri: http://localhost:8761
+          uri: http://eureka-server:8761
           predicates: Path=/eureka/web
           filters: SetPath=/
         - id: eureka-server-static
-          uri: http://localhost:8761
+#          uri: http://localhost:8761
+          uri: http://eureka-server:8761
           predicates: Path=/eureka/**
