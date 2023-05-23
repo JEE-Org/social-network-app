@@ -65,10 +65,9 @@ public class ENSIAStService implements IENSIAStSerivces {
                 .state(State.INACTIF)
                 .role(Role.USER)
                 .build();
-
+        ensiastRepository.saveAndFlush(ensiaSt);
         sendENSIASt(ensiaSt,"registration");
         log.info(String.format("ENSIASt sent : %s",ensiaSt.toString()));
-        ensiastRepository.saveAndFlush(ensiaSt);
         return ensiaSt;
     }
 
