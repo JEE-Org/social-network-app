@@ -31,7 +31,7 @@ spec:
             - name: KAFKA_LISTENERS
               value: CLIENT://:9092,INTERNAL://:9093,
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: CLIENT://kafka:9092,INTERNAL://localhost:9093
+              value: CLIENT://broker:9092,INTERNAL://localhost:9093
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
               value: INTERNAL
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR

@@ -9,13 +9,13 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /ENSIASts
             pathType: Prefix
             backend:
               service:
                 name: registration-service
                 port:
-                  number: 8081
+                  number: 8090
           - path: /phpmyadmin
             pathType: Prefix
             backend:
