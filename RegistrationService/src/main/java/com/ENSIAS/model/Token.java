@@ -16,19 +16,19 @@ public class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
+    private Integer id;
 
     @Column(unique = true)
     public String token;
 
-    public String tokenType = "BEARER";
+    private String tokenType = "BEARER";
 
-    public boolean revoked;
+    private boolean revoked;
 
-    public boolean expired;
+    private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ensiast_id")
     @JsonIgnore
-    public ENSIASt ensiaSt;
+    private ENSIASt ensiaSt;
 }
