@@ -37,10 +37,7 @@ jobs:
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
 
-      - name: Build EurekaServer Docker image
-        run: |
-          cd EurekaServer/
-          docker build -t eureka-server:latest .
+      
       
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -48,50 +45,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push EurekaServer Docker image to Docker Hub
+      - name: Build and push with script
         run: |
-          docker tag eureka-server:latest ${{ secrets.DOCKERHUB_USERNAME }}/eureka-server:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-server:latest
-
-      - name: Build RegistrationService Docker image
-        run: |
-          cd RegistrationService/
-          docker build -t registration-service:latest .
-      
-      - name: Push RegistrationService Docker image to Docker Hub
-        run: |
-          docker tag registration-service:latest ${{ secrets.DOCKERHUB_USERNAME }}/registration-service:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/registration-service:latest
-
-      - name: Build MailingService Docker image
-        run: |
-          cd MailingService/
-          docker build -t mailing-service:latest .
-      
-      - name: Push MailingService Docker image to Docker Hub
-        run: |
-          docker tag mailing-service:latest ${{ secrets.DOCKERHUB_USERNAME }}/mailing-service:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mailing-service:latest
-
-      - name: Build PostService Docker image
-        run: |
-          cd PostService/
-          docker build -t post-service:latest .
-      
-      - name: Push PostService Docker image to Docker Hub
-        run: |
-          docker tag post-service:latest ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest
-      
-      - name: Build API-Gateway Docker image
-        run: |
-          cd API-Gateway/
-          docker build -t api-gateway:latest .
-      
-      - name: Push API-Gateway Docker image to Docker Hub
-        run: |
-          docker tag api-gateway:latest ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
+          dir="./"
+          for ser in $dir/*; do
+            if [ -d "$ser" ] && [ -e "$ser/Dockerfile" ]; then
+              ser_name=$(basename $ser)
+              ser_name=${ser_name,,}
+              docker build -t $ser_name:latest $ser
+              docker tag $ser_name:latest ${{ secrets.DOCKERHUB_USERNAME }}/$ser_name:latest
+              docker push ${{ secrets.DOCKERHUB_USERNAME }}/$ser_name:latest
+            fi
+          done
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
